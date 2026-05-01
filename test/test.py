@@ -28,18 +28,26 @@ def spi_vector(cs_n: int, sclk: int, mosi: int) -> int:
 async def spi_xfer(dut, frame: int) -> int:
     # ... الكود السابق ...
     for bit_idx in range(15, -1, -1):
-        # ... إرسال MOSI ...
+        mosi = (frame >> bit_idx) & 1
+        dut.uio_in.value = spi_vector(0, 0, mosi)
+        await wait_cycles(dut, 3)
+
+        # 1. اقرأ قيمة الناقل بالكامل أولاً كـ LogicArray
+        current_uio = dut.uio_out.value 
         
-        # بدلاً من miso = int(dut.uio_out.value) & 1
-        # نصل للبت رقم 3 مباشرة ونتأكد أنه ليس X
-        raw_miso = dut.uio_out[3].value
-        if str(raw_miso) in ['x', 'z']:
-            miso = 0  # أو تعامل معها كخطأ حسب رغبتك
-            cocotb.log.warning(f"MISO is {raw_miso} at bit {bit_idx}")
+        # 2. استخرج البت رقم 3 من القيمة المخزنة (وليس من المقبض مباشرة)
+        # في Cocotb، الفهرسة تبدأ من اليمين (0) إذا كان التعريف [7:0]
+        miso_bit = current_uio[3]
+
+        # 3. تحقق من صلاحية القيمة (منع خطأ ValueError بسبب X أو Z)
+        if str(miso_bit) in ['0', '1']:
+            miso = int(miso_bit)
         else:
-            miso = int(raw_miso)
-            
+            miso = 0  # قيمة افتراضية أثناء عدم الاستقرار في GLS
+            cocotb.log.debug(f"Bit {bit_idx}: MISO is unresolvable ({miso_bit}), using 0")
+
         cap = (cap << 1) | miso
+        # ... بقية الكود (SCK toggling) ...
         cocotb.log.info(f"spi_xfer bit={bit_idx} mosi={mosi} miso={miso} cap=0x{cap:04x}")
 
         dut.uio_in.value = spi_vector(0, 1, mosi)
