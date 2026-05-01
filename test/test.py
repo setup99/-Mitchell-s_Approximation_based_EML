@@ -50,9 +50,10 @@ async def spi_xfer(dut, frame: int) -> int:
         dut.uio_in.value = spi_vector(0, 0, mosi)
         await wait_cycles(dut, 4)
 
-        # قراءة MISO من البت الأقل وزنًا (uio_out[0]) مع التعامل الآمن لقيم X/Z
+        # قراءة MISO من البت الأقل وزنًا عبر القيمة الكاملة للناقل
         try:
-            miso = int(dut.uio_out.value) & 1
+            full_val = dut.uio_out.value
+            miso = int(full_val) & 1
         except ValueError:
             miso_str = str(dut.uio_out.value)
             miso_bit = miso_str[-1] if miso_str else '0'
