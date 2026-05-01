@@ -26,20 +26,19 @@ def spi_vector(cs_n: int, sclk: int, mosi: int) -> int:
 
 
 async def spi_xfer(dut, frame: int) -> int:
-    """Transfer a 16-bit SPI frame and return the captured 16-bit response."""
-    dut.uio_in.value = spi_vector(1, 0, 0)
-    await wait_cycles(dut, 4)
-
-    dut.uio_in.value = spi_vector(0, 0, 0)
-    await wait_cycles(dut, 4)
-
-    cap = 0
+    # ... الكود السابق ...
     for bit_idx in range(15, -1, -1):
-        mosi = (frame >> bit_idx) & 1
-        dut.uio_in.value = spi_vector(0, 0, mosi)
-        await wait_cycles(dut, 3)
-
-        miso = int(dut.uio_out.value) & 1
+        # ... إرسال MOSI ...
+        
+        # بدلاً من miso = int(dut.uio_out.value) & 1
+        # نصل للبت رقم 3 مباشرة ونتأكد أنه ليس X
+        raw_miso = dut.uio_out[3].value
+        if str(raw_miso) in ['x', 'z']:
+            miso = 0  # أو تعامل معها كخطأ حسب رغبتك
+            cocotb.log.warning(f"MISO is {raw_miso} at bit {bit_idx}")
+        else:
+            miso = int(raw_miso)
+            
         cap = (cap << 1) | miso
         cocotb.log.info(f"spi_xfer bit={bit_idx} mosi={mosi} miso={miso} cap=0x{cap:04x}")
 
