@@ -88,10 +88,10 @@ async def test_eml_spi_full(dut):
     dut.ena.value = 1
     dut.ui_in.value = 0
     dut.uio_in.value = 0
-    await Timer(200, unit='ns')
+    await Timer(1000, unit='ns')
     dut.rst_n.value = 1
-    await Timer(200, unit='ns')
-
+    await Timer(1000, unit='ns')
+    await wait_cycles(dut, 20)
     # [1] Feed-forward: eml(0,1) = 1.0
     await write_reg(dut, 1, real_to_q6_6(0.0))
     await write_reg(dut, 2, real_to_q6_6(1.0))
