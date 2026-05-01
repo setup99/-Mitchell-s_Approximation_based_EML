@@ -13,7 +13,7 @@ You can also include images in this folder and reference them in the markdown. E
 
 This design implements a **Sequential EML Engine with Operand Feedback** — a compact hardware accelerator for computing exponential-logarithmic expressions using Mitchell's approximation. Instead of building massive expression trees in silicon, we use a single reusable EML unit and feedback loops to compute nested expressions over multiple cycles.
 
-![Results](Results%20.png)
+![Results](Results.png)
 
 The results figure explains how a single EML block can be reused across cycles to build nested expressions.
 
@@ -33,7 +33,7 @@ This work is based on the techniques and evaluation presented in the paper at [a
 #### 1. **EML Tile (Combinational)**
 The core computation unit ([eml_tile.v](../src/eml_tile.v)):
 
-![EML internal architecture](eml_tile_internal_architecture%281%29.svg)
+![EML internal architecture](eml_tile_internal_architecture(1).svg)
 
 - **No clock** — pure combinational logic
 - Computes: `out = exp(x) - ln(y)`
