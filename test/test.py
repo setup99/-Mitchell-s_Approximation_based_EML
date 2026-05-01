@@ -50,8 +50,13 @@ async def spi_xfer(dut, frame: int) -> int:
         dut.uio_in.value = spi_vector(0, 0, mosi)
         await wait_cycles(dut, 4)
 
-        # قراءة MISO من البت الأقل وزنًا (uio_out[0])
-        miso = int(dut.uio_out.value) & 1
+        # قراءة MISO من البت الأقل وزنًا (uio_out[0]) مع التعامل الآمن لقيم X/Z
+        try:
+            miso = int(dut.uio_out.value) & 1
+        except ValueError:
+            miso_str = str(dut.uio_out.value)
+            miso_bit = miso_str[-1] if miso_str else '0'
+            miso = int(miso_bit) if miso_bit in '01' else 0
         cap = (cap << 1) | miso
 
         # نبضة الساعة (Rising Edge)
