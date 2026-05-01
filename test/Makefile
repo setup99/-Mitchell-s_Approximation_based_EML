@@ -6,7 +6,7 @@ SIM ?= icarus
 FST ?= -fst # Use more efficient FST format
 TOPLEVEL_LANG ?= verilog
 SRC_DIR = $(PWD)/../src
-PROJECT_SOURCES = project.v
+PROJECT_SOURCES = project.v eml_spi_wrapper.v eml_feedback_cell.v eml_tile.v mitchell_exp2.v mitchell_log2.v
 
 ifneq ($(GATES),yes)
 
