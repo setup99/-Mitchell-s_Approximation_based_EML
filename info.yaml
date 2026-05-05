@@ -1,6 +1,6 @@
 # Tiny Tapeout project information
 project:
-  title:        "Mitchell-s_Approximation_based_EML"
+  title:        "IEEE Mitchell-s_Approximation_based_EML"
   author:  "Boussaa Youcef, Korichi Aymene, Bouyahiaoui Hadjer"
   discord:      "" 
   description:  "Multiplier-less EML gate using Mitchell’s approximation for energy-efficient transcendental processing in ASICs."
